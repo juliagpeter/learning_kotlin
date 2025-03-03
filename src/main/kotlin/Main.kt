@@ -1,6 +1,7 @@
 package org.example
 
 import com.google.gson.Gson
+import com.google.gson.JsonParser
 import com.google.gson.JsonSyntaxException
 import java.net.URI
 import java.net.http.HttpClient
@@ -24,25 +25,44 @@ fun main() {
     println(json)
 
     val gson = Gson()
-    val testGame = gson.fromJson(json, InfoGame::class.java)
+    var testGame: InfoGame? = null
 
-    // código omitido
+    // Converte a string JSON para JsonElement
+    val jsonElement = JsonParser.parseString(json)
 
-    val result = runCatching {
-        val myGame = Game(
-            testGame.info.title,
-            testGame.info.thumb)
-        println(myGame)
+    if (jsonElement.isJsonObject) {
+        testGame = gson.fromJson(jsonElement, InfoGame::class.java)
+    } else if (jsonElement.isJsonArray) {
+        println("Invalid Id. Try again.")
+        return
     }
 
-    result.onFailure{
+    var myGame: Game? = null
+
+    val result = runCatching {
+        if (testGame != null) {
+            myGame = Game(
+                testGame.info.title,
+                testGame.info.thumb
+            )
+        }
+    }
+
+    result.onFailure {
         println("Game not found. Try again.")
     }
 
     result.onSuccess {
-
+        print("Do you want to add a description to the game? (y/n): ")
+        val answer = read.nextLine()
+        if (answer.equals("y", ignoreCase = true)) {
+            print("Enter the description: ")
+            val desc = read.nextLine()
+            // Atenção: para alterar a descrição, a propriedade 'description' em Game deve ser 'var' e não 'val'
+            myGame?.description = desc
+        } else {
+            myGame?.description = myGame?.title ?: ""
+        }
+        println(myGame)
     }
-
-
-
 }
