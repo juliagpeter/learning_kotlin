@@ -3,6 +3,8 @@ package org.example
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.google.gson.JsonSyntaxException
+import org.example.br.com.test.learning_kotlin.model.Game
+import org.example.br.com.test.learning_kotlin.model.InfoGame
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest

@@ -1,4 +1,4 @@
-package org.example
+package org.example.br.com.test.learning_kotlin.model
 
 data class Game (val title:String, val image:String) {
     var description:String? = null
